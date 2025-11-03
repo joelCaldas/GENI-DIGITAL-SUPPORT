@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GENI DIGITAL SUPPORT - Pedidos</title>
+    <!-- Carrega o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Adiciona a cor personalizada ao Tailwind
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-primary': '#003F69',
+                        'brand-dark': '#003050', // Um tom mais escuro para o efeito hover
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Fonte Inter (padrão do Tailwind) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden; /* Evita scroll horizontal */
+        }
+        
+        /* Classe para o serviço selecionado */
+        .service-selected {
+            outline: 4px solid #06b6d4; /* ciano-500 */
+            outline-offset: -2px;
+        }
+
+        /* Formas abstratas do fundo (simplificadas) */
+        .shape-1 {
+            position: absolute;
+            top: -150px;
+            left: -150px;
+            width: 400px;
+            height: 400px;
+            background-color: #cffafe; /* ciano-100 */
+            border-radius: 50%;
+            filter: blur(50px);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .shape-2 {
+            position: absolute;
+            bottom: -200px;
+            right: -200px;
+            width: 500px;
+            height: 500px;
+            background-color: #003F69; /* Cor da marca aplicada */
+            clip-path: polygon(0 0, 100% 20%, 80% 100%, 20% 80%);
+            opacity: 0.8;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen relative overflow-hidden">
+    <!-- Formas de fundo -->
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+
+    <div class="container mx-auto p-4 flex flex-col items-center justify-center min-h-screen">
+        
+        <!-- Logo -->
+        <div class="my-8">
+            <div class="w-24 h-24 bg-white rounded-full shadow-lg flex items-center justify-center">
+                <!-- Placeholder para o Logo "GENI" com a cor da marca -->
+                <img src="https://placehold.co/100x100/FFFFFF/003F69?text=GENI&font=inter" alt="Logo GENI DIGITAL SUPPORT" class="rounded-full">
+            </div>
+            <h1 class="text-center text-xl font-bold text-gray-700 mt-2">GENI DIGITAL SUPPORT</h1>
+        </div>
+
+        <!-- ====================================================== -->
+        <!-- PÁGINA 1: SELEÇÃO DE SERVIÇOS                          -->
+        <!-- ====================================================== -->
+        <section id="page1" class="w-full max-w-4xl">
+            <div class="bg-white/70 backdrop-blur-md rounded-xl shadow-2xl p-6 md:p-10 border border-gray-200">
+                <h2 class="text-2xl font-bold text-center text-brand-primary mb-8">Nossos Serviços</h2>
+                
+                <!-- Grid de Serviços -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Serviços da Esquerda -->
+                    <div class="space-y-4">
+                        <button class="service-item text-left w-full p-4 bg-brand-primary text-white rounded-lg shadow-md hover:bg-brand-dark transition-all duration-300" data-service="Análise para manutenção e montagem de computadores">
+                            Análise para manutenção e montagem de computadores.
+                        </button>
+                        <button class="service-item text-left w-full p-4 bg-brand-primary text-white rounded-lg shadow-md hover:bg-brand-dark transition-all duration-300" data-service="Limpeza de componentes eletrônicos">
+                            Limpeza de componentes eletrônicos.
+                        </button>
+                        <button class="service-item text-left w-full p-4 bg-brand-primary text-white rounded-lg shadow-md hover:bg-brand-dark transition-all duration-300" data-service="Programação de sistema web">
+                            Programação de sistema web.
+                        </button>
+                        <button class="service-item text-left w-full p-4 bg-brand-primary text-white rounded-lg shadow-md hover:bg-brand-dark transition-all duration-300" data-service="Suporte digital nas plataformas">
+                            Suporte digital nas plataformas.
+                        </button>
+                    </div>
+
+                    <!-- Serviço da Direita -->
+                    <div class="space-y-4">
+                        <button class="service-item text-left w-full p-4 bg-brand-primary text-white rounded-lg shadow-md hover:bg-brand-dark transition-all duration-300" data-service="Soluções automotivas: IA e IoT">
+                            Soluções automotivas: IA e IoT.
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botão de Envio -->
+                <div class="mt-10 flex justify-center md:justify-end">
+                    <button id="goToPage2" class="px-8 py-3 bg-cyan-500 text-white font-bold rounded-lg shadow-lg hover:bg-cyan-600 transition-all duration-300">
+                        Enviar pedidos
+                    </button>
+                </div>
+                <p id="errorPage1" class="text-red-500 text-center mt-4 hidden">Por favor, selecione pelo menos um serviço.</p>
+            </div>
+        </section>
+
+        <!-- ====================================================== -->
+        <!-- PÁGINA 2: FORMULÁRIO DE CONTATO                         -->
+        <!-- ====================================================== -->
+        <section id="page2" class="w-full max-w-4xl hidden">
+            <div class="bg-brand-primary/90 backdrop-blur-md rounded-xl shadow-2xl p-6 md:p-10 border border-brand-dark">
+                <h2 class="text-2xl font-bold text-center text-white mb-8">Informações do Pedido</h2>
+                
+                <form id="orderForm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Campos da Esquerda -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="nome" class="block text-sm font-medium text-gray-200 mb-1">Nome</label>
+                                <input type="text" id="nome" name="nome" required class="w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label for="contato" class="block text-sm font-medium text-gray-200 mb-1">Numero/contato</label>
+                                <input type="tel" id="contato" name="contato" required class="w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                            </div>
+                            <div>
+                                <label for="cep" class="block text-sm font-medium text-gray-200 mb-1">CEP</label>
+                                <input type="text" id="cep" name="cep" class="w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label for="numero" class="block text-sm font-medium text-gray-200 mb-1">Número</label>
+                                    <input type="text" id="numero" name="numero" class="w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                                </div>
+                                <div>
+                                    <label for="referencia" class="block text-sm font-medium text-gray-200 mb-1">Ponto - Referência</label>
+                                    <input type="text" id="referencia" name="referencia" class="w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campo da Direita (Descrição) -->
+                        <div class="space-y-4">
+                            <div>
+                                <label for="descricao" class="block text-sm font-medium text-gray-200 mb-1">Descrição</label>
+                                <textarea id="descricao" name="descricao" rows="12" class="w-full p-3 rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500" placeholder="Descreva o que você precisa..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="mt-10 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <button type="button" id="goToPage1" class="w-full md:w-auto px-6 py-3 bg-gray-600 text-white font-bold rounded-lg shadow-lg hover:bg-gray-700 transition-all duration-300">
+                            Voltar
+                        </button>
+                        <button type="submit" class="w-full md:w-auto px-8 py-3 bg-cyan-500 text-white font-bold rounded-lg shadow-lg hover:bg-cyan-600 transition-all duration-300">
+                            Enviar pedidos
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </section>
+
+        <!-- Mensagem de Sucesso (Modal) -->
+        <div id="successMessage" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm text-center">
+                <h3 class="text-xl font-bold text-green-600">Pedido Enviado!</h3>
+                <p class="text-gray-700 mt-2">Seu pedido foi formatado. Você será redirecionado para o WhatsApp.</p>
+                <button id="closeSuccess" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg">
+                    Ok
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Array para armazenar os serviços selecionados
+        let selectedServices = [];
+
+        // --- Elementos do DOM ---
+        const page1 = document.getElementById('page1');
+        const page2 = document.getElementById('page2');
+        const serviceItems = document.querySelectorAll('.service-item');
+        const goToPage2Button = document.getElementById('goToPage2');
+        const goToPage1Button = document.getElementById('goToPage1');
+        const orderForm = document.getElementById('orderForm');
+        const errorPage1 = document.getElementById('errorPage1');
+        
+        // Modal de Sucesso
+        const successMessage = document.getElementById('successMessage');
+        const closeSuccessButton = document.getElementById('closeSuccess');
+
+        // --- Lógica da Página 1: Seleção de Serviços ---
+        serviceItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const serviceName = item.dataset.service;
+                
+                // Adiciona ou remove a classe visual
+                item.classList.toggle('service-selected');
+                
+                // Adiciona ou remove do array
+                if (selectedServices.includes(serviceName)) {
+                    selectedServices = selectedServices.filter(s => s !== serviceName);
+                } else {
+                    selectedServices.push(serviceName);
+                }
+                
+                // Esconde a mensagem de erro se um serviço for selecionado
+                if(selectedServices.length > 0) {
+                    errorPage1.classList.add('hidden');
+                }
+            });
+        });
+
+        // --- Navegação entre Páginas ---
+        goToPage2Button.addEventListener('click', () => {
+            if (selectedServices.length === 0) {
+                // Mostra erro se nenhum serviço for selecionado
+                errorPage1.classList.remove('hidden');
+            } else {
+                // Alterna para a página 2
+                page1.classList.add('hidden');
+                page2.classList.remove('hidden');
+                window.scrollTo(0, 0); // Rola para o topo
+            }
+        });
+
+        goToPage1Button.addEventListener('click', () => {
+            // Alterna de volta para a página 1
+            page2.classList.add('hidden');
+            page1.classList.remove('hidden');
+            window.scrollTo(0, 0); // Rola para o topo
+        });
+
+        // --- Lógica da Página 2: Envio do Formulário ---
+        orderForm.addEventListener('submit', (event) => {
+            event.preventDefault(); // Impede o envio real do formulário
+            
+            // =================================================================
+            // IMPORTANTE: Insira seu número de WhatsApp Business aqui!
+            // Formato: 55 (Código do País) + DDD + Número (sem + ou -)
+            // Exemplo: 5511999998888
+            // =================================================================
+            const seuNumeroWhatsApp = '5591991522001'; 
+            
+            // --- Validação do Número ---
+            if (seuNumeroWhatsApp === 'SEUNUMEROAQUI' || seuNumeroWhatsApp.length < 10) {
+                alert('Erro: O número de WhatsApp não foi configurado corretamente no código HTML.');
+                return;
+            }
+
+            // --- Coleta de Dados ---
+            const formData = new FormData(orderForm);
+            const nome = formData.get('nome');
+            const contato = formData.get('contato');
+            const cep = formData.get('cep');
+            const numero = formData.get('numero');
+            const referencia = formData.get('referencia');
+            const descricao = formData.get('descricao');
+
+            // --- Formatação dos Serviços ---
+            const servicosFormatados = selectedServices.map(s => `- ${s}`).join('\n');
+
+            // --- Montagem da Mensagem ---
+            const message = `
+Olá, *GENI DIGITAL SUPPORT*!
+Gostaria de solicitar um pedido.
+
+*Serviços Selecionados:*
+${servicosFormatados}
+
+*Dados do Cliente:*
+Nome: ${nome}
+Contato: ${contato}
+CEP: ${cep}
+Número: ${numero}
+Ponto de Referência: ${referencia}
+
+*Descrição Adicional:*
+${descricao}
+            `;
+
+            // --- Criação da URL do WhatsApp ---
+            const whatsappURL = `https://wa.me/${seuNumeroWhatsApp}?text=${encodeURIComponent(message.trim())}`;
+
+            // --- Mostrar mensagem de sucesso e redirecionar ---
+            successMessage.classList.remove('hidden');
+            
+            // Redireciona após um pequeno atraso
+            setTimeout(() => {
+                window.open(whatsappURL, '_blank');
+            }, 1000);
+        });
+        
+        // Fechar modal de sucesso
+        closeSuccessButton.addEventListener('click', () => {
+             successMessage.classList.add('hidden');
+             
+             // Opcional: resetar o formulário e voltar para a página 1
+             orderForm.reset();
+             selectedServices = [];
+             serviceItems.forEach(item => item.classList.remove('service-selected'));
+             page2.classList.add('hidden');
+             page1.classList.remove('hidden');
+             window.scrollTo(0, 0);
+        });
+
+    </script>
+</body>
+</html>
+
+
