@@ -182,8 +182,8 @@
         <!-- Mensagem de Sucesso (Modal) -->
         <div id="successMessage" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 hidden">
             <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm text-center">
-                <h3 class="text-xl font-bold text-green-600">Pedido Enviado!</h3>
-                <p class="text-gray-700 mt-2">Seu pedido foi formatado. Você será redirecionado para o WhatsApp.</p>
+                <h3 class="text-xl font-bold text-green-600">Pedido Formatado!</h3>
+                <p class="text-gray-700 mt-2">Você será redirecionado para o seu aplicativo de e-mail para confirmar o envio.</p>
                 <button id="closeSuccess" class="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg">
                     Ok
                 </button>
@@ -253,20 +253,13 @@
 
         // --- Lógica da Página 2: Envio do Formulário ---
         orderForm.addEventListener('submit', (event) => {
-            event.preventDefault(); // Impede o envio real do formulário
+            event.preventDefault(); // Impede o envio padrão do formulário
             
             // =================================================================
-            // IMPORTANTE: Insira seu número de WhatsApp Business aqui!
-            // Formato: 55 (Código do País) + DDD + Número (sem + ou -)
-            // Exemplo: 5511999998888
+            // Configuração do Email de Destino
             // =================================================================
-            const seuNumeroWhatsApp = '5591991522001'; 
-            
-            // --- Validação do Número ---
-            if (seuNumeroWhatsApp === 'SEUNUMEROAQUI' || seuNumeroWhatsApp.length < 10) {
-                alert('Erro: O número de WhatsApp não foi configurado corretamente no código HTML.');
-                return;
-            }
+            const destinatario = 'joelcaldas123@gmail.com'; 
+            const assunto = 'Novo Pedido - GENI DIGITAL SUPPORT';
 
             // --- Coleta de Dados ---
             const formData = new FormData(orderForm);
@@ -280,34 +273,32 @@
             // --- Formatação dos Serviços ---
             const servicosFormatados = selectedServices.map(s => `- ${s}`).join('\n');
 
-            // --- Montagem da Mensagem ---
-            const message = `
-Olá, *GENI DIGITAL SUPPORT*!
+            // --- Montagem da Mensagem (Corpo do Email) ---
+            const message = `Olá, GENI DIGITAL SUPPORT!
 Gostaria de solicitar um pedido.
 
-*Serviços Selecionados:*
+Serviços Selecionados:
 ${servicosFormatados}
 
-*Dados do Cliente:*
+Dados do Cliente:
 Nome: ${nome}
 Contato: ${contato}
 CEP: ${cep}
 Número: ${numero}
 Ponto de Referência: ${referencia}
 
-*Descrição Adicional:*
-${descricao}
-            `;
+Descrição Adicional:
+${descricao}`;
 
-            // --- Criação da URL do WhatsApp ---
-            const whatsappURL = `https://wa.me/${seuNumeroWhatsApp}?text=${encodeURIComponent(message.trim())}`;
+            // --- Criação da URL mailto ---
+            const mailtoURL = `mailto:${destinatario}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(message)}`;
 
-            // --- Mostrar mensagem de sucesso e redirecionar ---
+            // --- Mostrar mensagem de sucesso e redirecionar para o app de e-mail ---
             successMessage.classList.remove('hidden');
             
             // Redireciona após um pequeno atraso
             setTimeout(() => {
-                window.open(whatsappURL, '_blank');
+                window.location.href = mailtoURL;
             }, 1000);
         });
         
@@ -315,7 +306,7 @@ ${descricao}
         closeSuccessButton.addEventListener('click', () => {
              successMessage.classList.add('hidden');
              
-             // Opcional: resetar o formulário e voltar para a página 1
+             // Resetar o formulário e voltar para a página 1
              orderForm.reset();
              selectedServices = [];
              serviceItems.forEach(item => item.classList.remove('service-selected'));
@@ -327,5 +318,3 @@ ${descricao}
     </script>
 </body>
 </html>
-
-
